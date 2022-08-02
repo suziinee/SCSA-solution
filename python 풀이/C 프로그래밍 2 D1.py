@@ -2,6 +2,7 @@ n = int(input())
 arr = [ [list(map(int, input().split())) for _ in range(n)], [[0]*n for _ in range(n)] ]
 cur = 0
 
+
 def rotation() :
     global cur
     after = (cur+1) % 2
