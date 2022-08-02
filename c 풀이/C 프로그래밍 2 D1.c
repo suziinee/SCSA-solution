@@ -1,66 +1,50 @@
 #include <stdio.h>
 
+int map[2][50 + 10][50 + 10];
+int cur;
 int n;
-int a[50 + 10][50 + 10];
-int b[50 + 10][50 + 10];
-int rotate;
-void input(void);
-void output(void);
-void rotation90(void);
-void btoa(void);
-
-void input(void)
-{
-	scanf("%d", &n);
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			scanf("%d", &a[i][j]);
-		}
-	}
-	for (;;) {
-		scanf("%d", &rotate);
-		if (rotate == 0) break;
-		for (int i = 1; i <= (rotate / 90); i++) {
-			rotation90();
-			btoa();
-		}
-		output();
-	}
-}
 
 void output(void)
 {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			printf("%d ", b[i][j]);
+			printf("%d ", map[cur][i][j]);
 		}
 		printf("\n");
 	}
 }
 
-void rotation90(void)
+//cur에서 (cur+1)%2로
+void rotation(void)
 {
+	int after = (cur + 1) % 2;
 	int y = n - 1;
 	for (int i = 0; i < n; i++) {
 		int x = 0;
 		for (int j = 0; j < n; j++) {
-			b[x][y] = a[i][j];
+			map[after][x][y] = map[cur][i][j];
 			x += 1;
 		}
 		y -= 1;
 	}
-}
-
-void btoa(void)
-{
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			a[i][j] = b[i][j];
-		}
-	}
+	cur = after;
 }
 
 void main(void)
 {
-	input();
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			scanf("%d", &map[cur][i][j]);
+		}
+	}
+	int tmp;
+	for (;;) {
+		scanf("%d", &tmp);
+		if (!tmp) break;
+		for (int i = 0; i < (tmp / 90); i++) {
+			rotation();
+		}
+		output();
+	}
 }
