@@ -2,13 +2,12 @@
 
 void Reverse_Disp(char *ch)
 {
-	int cnt = 0;
-	while (*ch) {
-		ch++; cnt++;
-	}
+	char *p = ch;
+	while (*ch) ch++;
 	ch -= 1;
-	for (int i = 0; i < cnt; i++) {
-		printf("%c", *ch--);
+	while (p <= ch) {
+		printf("%c", *ch);
+		ch--;
 	}
 }
 
