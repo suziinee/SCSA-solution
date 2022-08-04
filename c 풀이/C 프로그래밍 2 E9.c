@@ -10,22 +10,21 @@ int count(char* a)
 	return n;
 }
 
-//d의 idx 자리에 ch를 넣고 한칸씩 뒤로 밀어서 리턴
-void slide(char* a, char ch, int idx)
+//pos 인덱스부터 s의 문자열 개수만큼 만큼 만큼 뒤로 밀기
+void slide(char* a, char* b, int pos)
 {
-	int n = count(a);
-	for (int i = n; i > idx; i--) {
-		a[i] = a[i - 1];
+	int len_a = count(a);
+	int len_b = count(b);
+	for (int i = len_a - 1; i >= pos; i--) {
+		a[i + len_b] = a[i];
 	}
-	a[idx] = ch;
 }
 
-char * str_insert(char* d, char* s, int pos)
+char* str_insert(char* d, char* s, int pos)
 {
-	int s_len = count(s);
-	for (int i = 0; i < s_len; i++) {
-		slide(d, s[i], pos);
-		pos++;
+	slide(d, s, pos);
+	while (*s) {
+		d[pos++] = *s++;
 	}
 	return d;
 }
