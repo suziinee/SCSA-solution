@@ -1,36 +1,27 @@
 #include <stdio.h>
 
-char d[100];
-char s[10];
-
-int count(char* a)
-{
-	int n = 0;
-	while (a[n]) n++;
-	return n;
-}
-
-//pos 인덱스부터 s의 문자열 개수만큼 만큼 만큼 뒤로 밀기
-void slide(char* a, char* b, int pos)
-{
-	int len_a = count(a);
-	int len_b = count(b);
-	for (int i = len_a - 1; i >= pos; i--) {
-		a[i + len_b] = a[i];
-	}
-}
+char ans[110];
 
 char* str_insert(char* d, char* s, int pos)
 {
-	slide(d, s, pos);
-	while (*s) {
-		d[pos++] = *s++;
+	int i = 0;
+
+	for (i; i < pos; i++) {
+		ans[i] = *d++;
 	}
-	return d;
+	for (i; *s != '\0'; i++) {
+		ans[i] = *s++;
+	}
+	for (i; *d != '\0'; i++) {
+		ans[i] = *d++;
+	}
+	return ans;
 }
 
-int main(void)
+void main(void)
 {
+	char d[100];
+	char s[10];
 	int pos;
 	char * sol;
 
@@ -43,6 +34,4 @@ int main(void)
 
 	// 출력하는 부분
 	printf("%s", sol);
-
-	return 0;
 }
