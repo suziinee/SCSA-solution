@@ -1,38 +1,32 @@
 #include <stdio.h>
 
-int nums[100000] = { 0 };
-int mod[100000] = { 0 };
-int ans = 0;
+int n;
+long long int arr[1000 + 10];
+long long int X[1000 + 10];
+int ans;
 
-void func(long long int a)
+int in_X(int num, int idx)
 {
-	if (nums[a / 100000] == (a / 100000)) {
-		if (mod[a % 100000] == (a % 100000)) {
-			return;
-		}
-		else {
-			ans += 1;
-			mod[a % 100000] = (a % 100000);
-			return;
-		}
+	for (int i = 0; i < idx; i++) {
+		if (X[i] == num) return 1;
 	}
-	else {
-		nums[a / 100000] = (a / 100000);
-		mod[a % 100000] = (a % 100000);
-		ans += 1;
-		return;
+	return 0;
+}
+
+void input(void)
+{
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &arr[i]);
+		if (in_X(arr[i], i) == 0) {
+			X[i] = arr[i];
+			ans += 1;
+		}
 	}
 }
 
-int main(void)
+void main(void)
 {
-	int n;
-	scanf("%d", &n);
-	long long int a;
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a);
-		func(a);
-	}
+	input();
 	printf("%d", ans);
-	return 0;
 }
