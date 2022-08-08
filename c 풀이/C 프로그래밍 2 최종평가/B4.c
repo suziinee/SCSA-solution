@@ -1,9 +1,6 @@
 #include <stdio.h>
 
 int n;
-int arr1[1000 + 10];
-int arr2[1000 + 10];
-int arr3[1000 + 10];
 int score[4][4]; //i번 후보에 대한 j점의 개수
 int sum[4];
 int max[4];
@@ -13,9 +10,10 @@ void input(void)
 {
 	scanf("%d", &n);
 	for (int i = 0; i < n; i++) {
-		scanf("%d %d %d", &arr1[i], &arr2[i], &arr3[i]);
-		sum[1] += arr1[i]; sum[2] += arr2[i]; sum[3] += arr3[i];
-		score[1][arr1[i]] += 1; score[2][arr2[i]] += 1; score[3][arr3[i]] += 1;
+		int tmp1, tmp2, tmp3;
+		scanf("%d %d %d", &tmp1, &tmp2, &tmp3);
+		sum[1] += tmp1; sum[2] += tmp2; sum[3] += tmp3;
+		score[1][tmp1] += 1; score[2][tmp2] += 1; score[3][tmp3] += 1;
 	}
 }
 
@@ -60,9 +58,8 @@ int compare_three(void)
 	return -1;
 }
 
-void main(void)
+void func(void)
 {
-	input();
 	int m = sum_max();
 	if (m == 1) {
 		printf("%d %d", max_idx, sum[max_idx]);
@@ -78,7 +75,13 @@ void main(void)
 	}
 	else {
 		int tmp = compare_three();
-		if (tmp==-1) printf("0 %d", sum[max_idx]);
+		if (tmp == -1) printf("0 %d", sum[max_idx]);
 		else printf("%d %d", tmp, sum[tmp]);
 	}
+}
+
+void main(void)
+{
+	input();
+	func();
 }
