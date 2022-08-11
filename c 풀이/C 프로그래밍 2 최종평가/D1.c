@@ -2,7 +2,6 @@
 
 int n;
 int max = 1;
-int hash[100000];
 
 int pow(int num)
 {
@@ -14,25 +13,39 @@ int pow(int num)
 	return ans;
 }
 
-int is_happy(int num) //행복한 수 1 리턴
+int in_arr(int *arr, int num)
 {
-	int tmp = num;
 	for (int i = 0; i < 1000; i++) {
-		int p = pow(tmp);
-		if (p == 1) return 1;
-		tmp = p;
+		if (num == arr[i]) return 1;
 	}
 	return 0;
 }
 
-int main(void)
+int is_happy(int num) //행복한 수 1 리턴
 {
-	scanf("%d", &n);
+	int arr[1000] = { 0, };
+	int i = 0; arr[0] = num;
+	for (i = 0; ; i++) {
+		int tmp = pow(arr[i]);
+		if (tmp == 1) return 1;
+		if (in_arr(arr, tmp)) return 0;
+		arr[i + 1] = tmp;
+	}
+}
+
+void func(void)
+{
 	for (int i = 1; i <= n; i++) {
 		if (is_happy(i)) {
 			if (i > max) max = i;
 		}
 	}
+}
+
+int main(void)
+{
+	scanf("%d", &n);
+	func();
 	printf("%d", max);
 	return 0;
 }
