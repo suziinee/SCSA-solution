@@ -50,6 +50,7 @@ void func(void)
 	for (int i = 1; i <= n; i++) {
 		if (happy[i]) {
 			if (i > max) max = i;
+			continue;
 		}
 		if (unhappy[i]) continue;
 		if (is_happy(i)) {
