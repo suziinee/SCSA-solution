@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 
 int n;
 int arr[5000 + 10];
@@ -39,6 +38,21 @@ void quick_sort(int left, int right)
 	}
 }
 
+void insertion_sort(int start)
+{
+	int idx = 0; int tmp = arr[start];
+	for (int i = start; i < n; i++) {
+		if (tmp > arr[i]) {
+			idx = i;
+		}
+	}
+	if (idx == 0) return;
+	for (int i = start + 1; i <= idx; i++) {
+		arr[i - 1] = arr[i];
+	}
+	arr[idx] = tmp;
+}
+
 ///////////////////////////////////
 
 void func(void)
@@ -53,7 +67,7 @@ void func(void)
 		arr[i + 1] = arr[i] + arr[i + 1];
 		ans += arr[i + 1]; 
 		i++;
-		quick_sort(i, n - 1);
+		insertion_sort(i);
 	}
 }
 
