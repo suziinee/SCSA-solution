@@ -36,8 +36,6 @@ void func(void)
 {
 	for (int i = 0; i < n; i++) {
 		digitroot(i);
-	}
-	for (int i = 0; i < n; i++) {
 		if (root[i] == root[max]) {
 			max = nums[i] > nums[max] ? max : i; //둘 중에 작은 것
 			continue;
