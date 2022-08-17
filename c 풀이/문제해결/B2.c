@@ -1,9 +1,7 @@
 #include <stdio.h>
 
 int n;
-char init[10 + 5][10 + 5];
 int maze[10 + 5][10 + 5];
-int check[10 + 5][10 + 5];
 int dir[4]; 
 int ans;
 
@@ -20,16 +18,14 @@ void input(void)
 {
 	scanf("%d", &n);
 	for (int i = 0; i < n; i++) {
-		scanf(" %s", init[i]);
+		char ch[10];
+		scanf(" %s", ch);
+		for (int j = 0; j < n; j++) {
+			maze[i][j] = ch[j] - '0';
+		}
 	}
 	for (int i = 0; i < 4; i++) {
 		scanf("%d", &dir[i]);
-	}
-
-	for (int y = 0; y < n; y++) {
-		for (int x = 0; x < n; x++) {
-			maze[y][x] = init[y][x] - '0';
-		}
 	}
 }
 
@@ -39,29 +35,36 @@ void func(void)
 	int dy[5] = { 0, 1, 0, -1, 0 };
 
 	int x = 0; int y = 0;
-	check[0][0] = 1;
+	maze[0][0] = 2;
 	int nx; int ny; int d = 0; //dir의 index
 	int flag = 0;
 	
 	for (;;) {
+		int save = 0;
 		for (;;) { //올바른 nx, ny를 구해서 나오기
 			nx = x + dx[dir[d]];
 			ny = y + dy[dir[d]];
-			if (check[ny][nx] == 1) {
+			if (save == 4) {
+				flag = 1;
+				break;
+			}
+			if (maze[ny][nx] == 2) {
 				flag = 1; 
 				break;
 			}
 			if (off_dir(nx, ny) == 1) {
 				d = (d + 1) % 4;
+				save++;
 			}
 			else if (maze[ny][nx] == 1) {
 				d = (d + 1) % 4;
+				save++;
 			}
 			else break;
 		}
 		if (flag == 1) break;
 		else {
-			check[ny][nx] = 1;
+			maze[ny][nx] = 2;
 			ans++;
 			x = nx; y = ny;
 		}
@@ -75,4 +78,3 @@ void main(void)
 	func();
 	printf("%d", ans);
 }
-
