@@ -1,78 +1,60 @@
 #include <stdio.h>
 
-int r, c; 
-int ans; int max = -1;
-typedef struct st {
-	int x; int y; int ex;
-	int chk[8];
-} P;
-P arr[50 + 5][50 + 5];
-int person;
-int dx[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
-int dy[8] = { -1, -1, 0, 1, 1, 1, 0, -1 };
+int r, c;
+int arr[50 + 5][50 + 5];
+int ans;
 
 void input(void)
 {
 	scanf("%d %d", &r, &c);
-	char ch[50 + 5];
-	for (int y = 0; y < r; y++) {
+	for (int i = 0; i < r; i++) {
+		char ch[50 + 5];
 		scanf(" %s", ch);
-		for (int x = 0; x < c; x++) {
-			if (ch[x] == '.') {
-				arr[y][x].x = x; arr[y][x].y = y; arr[y][x].ex = 0;
-			}
-			else if (ch[x] == 'o') {
-				arr[y][x].x = x; arr[y][x].y = y; arr[y][x].ex = 1;
-				person++;
-			}
+		for (int j = 0; j < c; j++) {
+			if (ch[j] == '.') arr[i][j] = 0;
+			else arr[i][j] = 1;
 		}
 	}
 }
 
-int check(P p)
+int dx[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
+int dy[8] = { -1, -1, 0, 1, 1, 1, 0, -1 };
+int shake(int y, int x)
 {
-	int nx; int ny; int ret = 0;
+	int ret = 0;
+	int nx; int ny;
 	for (int i = 0; i < 8; i++) {
-		nx = p.x + dx[i];
-		ny = p.y + dy[i];
-		if (p.chk[i] == 1) continue;
-		if (arr[ny][nx].ex == 0) continue;
+		nx = x + dx[i];
+		ny = y + dy[i];
 		if (nx < 0 || ny < 0 || nx >= c || ny >= r) continue;
-		p.chk[i] = 1;
-		arr[ny][nx].chk[(i + 4) % 8] = 1;
-		ret++;
+		if (arr[ny][nx] == 1) ret++;
 	}
 	return ret;
 }
 
-void func(void)
+void solve(void)
 {
+	int tmp; int max = -1;
+
 	for (int y = 0; y < r; y++) {
 		for (int x = 0; x < c; x++) {
-			if (arr[y][x].ex == 1) {
-				ans += check(arr[y][x]);
+			if (arr[y][x] == 1) {
+				ans += shake(y, x);
+			}
+			else {
+				tmp = shake(y, x);
+				if (max < tmp) max = tmp;
 			}
 		}
 	}
 
-	if (person == (r*c)) return;
-
-	int tmp = 0;
-	for (int y = 0; y < r; y++) {
-		for (int x = 0; x < c; x++) {
-			if (arr[y][x].ex == 0) {
-				tmp = check(arr[y][x]);
-				if ((ans + tmp) > max) max = ans + tmp;
-			}
-		}
-	}
-	ans = max;
+	if (max == -1) printf("%d", ans / 2);
+	else printf("%d", ans / 2 + max);
 }
 
 
 void main(void)
 {
 	input();
-	func();
-	printf("%d", ans);
+	solve();
 }
