@@ -1,70 +1,44 @@
 #include <stdio.h>
 
+#define MAX 1000
 int n;
-int happy[1000 + 10];
-int unhappy[1000 + 10];
-int max = -1;
+int arr[MAX + 10];
 
 int calcul(int num)
 {
 	int ret = 0;
 	while (num) {
-		ret += (num % 10) * (num % 10);
+		ret += (num % 10)*(num % 10);
 		num /= 10;
 	}
 	return ret;
 }
 
-int in_arr(int idx, int* p, int tmp)
+int happy(int num)
 {
-	for (int i = 0; i < idx; i++) {
-		if (p[i] == tmp) return 1;
+	arr[num] = 1;
+	while (num != 1) {
+		num = calcul(num);
+		if (arr[num]) return 0; //반복된 수면 행복한 수가 아님
+		arr[num]++;
 	}
-	return 0;
+	return 1;
 }
 
-int is_happy(int num)
+void solve(void)
 {
-	int arr[1000 + 10] = { 0 };
-	arr[0] = num; int i = 1;
-	
-	for (;;) {
-		int tmp = calcul(arr[i - 1]); //tmp=arr[i]
-
-		if ((happy[tmp]) || (tmp == 1)) { //arr를 모두 happy에 넣기
-			for (int k = 0; k <= i; k++) {
-				if (happy[arr[k]] == 0) happy[arr[k]] = 1;
-			}
-			return 1;
+	for (int i = n; i >= 1; i--) {
+		if (arr[i]) continue;
+		if (happy(i) == 1) {
+			printf("%d", i);
+			break;
 		}
-		if ((in_arr(i, arr, tmp)) || (unhappy[tmp])) { //arr를 모두 unhappy에 넣기
-			for (int k = 0; k <= i; k++) {
-				if (unhappy[arr[k]] == 0) unhappy[arr[k]] = 1;
-			}
-			return 0;
-		}
-
-		arr[i++] = tmp;
 	}
 }
 
-void func(void)
-{
-	for (int i = 1; i <= n; i++) {
-		if (unhappy[i]) continue;
-		if (happy[i]) {
-			if (i > max) max = i;
-			continue;
-		}
-		if (is_happy(i)) {
-			if (i > max) max = i;
-		}
-	}
-}
 
 void main(void)
 {
 	scanf("%d", &n);
-	func();
-	printf("%d", max);
+	solve();
 }
