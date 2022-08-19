@@ -1,94 +1,74 @@
 #include <stdio.h>
 
-int arr[5][5];
-int nums[5][5];
 typedef struct st {
 	int x;
 	int y;
-} AXIS;
-int ans; int b;
+} POS;
+POS arr[26];
+int nums[25];
+int bingo;
+int map[5][5];
 
 void input(void)
 {
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
-			scanf("%d", &arr[i][j]);
+			int a;
+			scanf("%d", &a);
+			arr[a].x = j; arr[a].y = i; 
 		}
 	}
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			scanf("%d", &nums[i][j]);
-		}
-	}
+	for (int i = 0; i < 25; i++) scanf("%d", &nums[i]);
 }
 
-int bingo(void)
+void check(int y, int x)
 {
-	int ret = 0;
-	//가로 먼저 확인
+	int row = 1;
 	for (int i = 0; i < 5; i++) {
-		int breadth = 1;
-		for (int j = 0; j < 5; j++) {
-			if (arr[i][j] != 0) {
-				breadth = 0; break;
-			}
-		}
-		if (breadth) {
-			ret++;
+		if (map[y][i] != 1) {
+			row = 0; break;
 		}
 	}
+	if (row) bingo++;
 
-	//세로 확인
+	int col = 1;
 	for (int i = 0; i < 5; i++) {
-		int height = 1;
-		for (int j = 0; j < 5; j++) {
-			if (arr[j][i] != 0) {
-				height = 0; break;
-			}
-		}
-		if (height) {
-			ret++;
+		if (map[i][x] != 1) {
+			col = 0; break;
 		}
 	}
+	if (col) bingo++;
 
-	//대각선 확인
-	int tmp1 = 1; int tmp2 = 1;
-	for (int i = 0; i < 5; i++) {
-		if (arr[i][i] != 0) {
-			tmp1 = 0; 
-		}
-		if (arr[i][4 - i] != 0) {
-			tmp2 = 0; 
-		}
-	}
-	if (tmp1) ret++;
-	if (tmp2) ret++;
-	return ret;
-}
-
-AXIS find(int num)
-{
-	AXIS ret;
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			if (arr[i][j] == num) {
-				ret.x = j; ret.y = i;
-				return ret;
+	if (x == y) {
+		int right = 1;
+		for (int i = 0; i < 5; i++) {
+			if (map[i][i] != 1) {
+				right = 0; break;
 			}
 		}
+		if (right) bingo++;
+	}
+	if (x + y == 4) {
+		int left = 1;
+		for (int i = 0; i < 5; i++) {
+			if (map[i][4 - i] != 1) {
+				left = 0; break;
+			}
+		}
+		if (left) bingo++;
 	}
 }
 
 void solve(void)
 {
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			AXIS axis = find(nums[i][j]);
-			arr[axis.y][axis.x] = 0;
-			if (bingo() >= 3) {
-				ans = i * 5 + (j + 1);
-				return;
-			}
+	for (int i = 0; i < 25; i++) {
+		int x = arr[nums[i]].x; 
+		int y = arr[nums[i]].y;
+		map[y][x] = 1;
+		check(y, x);
+		if (bingo >= 3) {
+			printf("%d", i + 1);
+			return;
 		}
 	}
 }
@@ -98,5 +78,4 @@ void main(void)
 {
 	input();
 	solve();
-	printf("%d", ans);
 }
