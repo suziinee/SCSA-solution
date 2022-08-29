@@ -25,28 +25,26 @@ void output()
 }
 
 const int dx[] = { 0, 1, 0, -1 };
-const int dy[] = { -1, 0, 1, 0 };
+const int dy[] = { 1, 0, -1, 0 };
 void solve()
 {
 	int dir = 0;
-	AXIS tmp = { n / 2, n / 2 };
+	AXIS tmp = { 0, 0 };
 
-	for (int i = 1; i <= n * n; i++) {
+	for (int i = n * n; i >= 1; i--) {
 		arr[tmp.y][tmp.x] = i;
 		
+		if (i == 1) return;
+
 		while (true) {
-			const int new_dir[] = { 3, 0, 1, 2 };
-
 			AXIS next;
-			next.x = tmp.x + dx[dir];
 			next.y = tmp.y + dy[dir];
-
-			if (arr[next.y][next.x] != 0) {
-				dir = new_dir[dir];
+			next.x = tmp.x + dx[dir];
+			if (next.y < 0 || next.x < 0 || next.y >= n || next.x >= n || arr[next.y][next.x] != 0) {
+				dir = (dir + 1) % 4;
 			}
 			else {
 				tmp = next;
-				dir = (dir + 1) % 4;
 				break;
 			}
 		}
