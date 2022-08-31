@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <cstring>
 #include <queue>
 #include <vector>
@@ -11,7 +12,7 @@ struct PAPER {
 };
 queue<PAPER> que;
 vector<PAPER> ans;
-int p[10];
+int p[100];
 
 
 void output()
@@ -20,17 +21,23 @@ void output()
 }
 
 
+bool compare(const int& p1, const int& p2)
+{
+	return p1 > p2;
+}
+
+
 void solve()
 {
-	for (int i = 9; i >= 1; i--) {
-		while (true) {
-			if (p[i] == 0) break;
+	sort(p, p + n, compare);
 
+	for (int i = 0; i < n; i++) {
+		while (true) {
 			PAPER tmp = que.front(); que.pop();
-			if (tmp.pri == i) {
+			if (tmp.pri == p[i]) {
 				ans.push_back(tmp);
-				p[i]--;
 				if (tmp.idx == m) return;
+				break;
 			}
 			else {
 				que.push(tmp);
@@ -53,7 +60,7 @@ void input()
 			PAPER paper;
 			cin >> paper.pri;
 			paper.idx = i;
-			p[paper.pri]++;
+			p[i] = paper.pri;
 			que.push(paper);
 		}
 
