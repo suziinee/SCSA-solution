@@ -39,35 +39,16 @@ void binary_search(const int& tar)
 {
 	int s = 1; int e = n;
 
-	while (true) {
-		//실패조건
-		if (s > e) {
-			ans.push_back(0);
-			return;
-		}
-
+	while (s <= e) {
 		int mid = (s + e) / 2;
 		if (tar == arr[mid]) {
 			ans.push_back(mid);
 			return;
 		}
-		else if (tar == arr[s]) {
-			ans.push_back(s);
-			return;
-		}
-		else if (tar == arr[e]) {
-			ans.push_back(e);
-			return;
-		}
-		else if (tar < arr[mid]) {
-			e = mid - 1;
-			continue;
-		}
-		else if (tar > arr[mid]) {
-			s = mid + 1;
-			continue;
-		}
+		else if (tar > arr[mid]) s = mid + 1;
+		else if (tar < arr[mid]) e = mid - 1;
 	}
+	ans.push_back(0);
 }
 
 
