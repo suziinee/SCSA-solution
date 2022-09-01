@@ -25,13 +25,37 @@ void output()
 }
 
 
-int search(const int& a, const int& b) //a <= () <= b를 leaf에서 찾아줌
+int lower(const int& tar) //나보다 크거나 같은 값 중에서 가장 작은 인덱스 찾기
 {
-	int cnt = 0;
-	for (int i = 0; i < n; i++) {
-		if (leaf[i] >= a && leaf[i] <= b) cnt++;
+	int s = 0; int e = n - 1;
+	int low = -1;
+	
+	while (s <= e) {
+		int mid = (s + e) / 2;
+		if (tar > leaf[mid]) s = mid + 1;
+		else if (tar <= leaf[mid]) {
+			low = mid;
+			e = mid - 1;
+		}
 	}
-	return cnt;
+	return low;
+}
+
+
+int upper(const int& tar) //나보다 작거나 같은 값 중에서 가장 큰 인덱스 찾기
+{
+	int s = 0; int e = n - 1;
+	int up = -1;
+
+	while (s <= e) {
+		int mid = (s + e) / 2;
+		if (tar < leaf[mid]) e = mid - 1;
+		else if (tar >= leaf[mid]) {
+			up = mid;
+			s = mid + 1;
+		}
+	}
+	return up;
 }
 
 
@@ -42,7 +66,14 @@ void solve()
 	for (int i = 0; i < n - 2; i++) {
 		for (int j = i + 1; j < n - 1; j++) { //next=leaf[j]
 			int jump = leaf[j] - leaf[i]; //첫번째 뛰는 거리
-			ans += search(leaf[j] + jump, leaf[j] + 2 * jump); 
+			int low = lower(leaf[j] + jump);
+			if (low == -1) {
+				break;
+			}
+			else {
+				int up = upper(leaf[j] + 2 * jump);
+				ans += (up - low + 1);
+			}
 		}
 	}
 }
