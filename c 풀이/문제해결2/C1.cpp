@@ -21,7 +21,6 @@ void input()
 	for (int i = 0; i < n; i++) {
 		int x, y;
 		cin >> x >> y;
-		if (y > l) continue;
 		animal.push_back({ x, y });
 	}
 }
@@ -33,34 +32,32 @@ void output()
 }
 
 
-int lower_bound(int s, int e, const int& tar) //tar보다 크거나 같은 사대의 최소 인덱스
+bool compare(const AXIS& a1, const AXIS& a2) //(0, 0)에서 멀어지는 방향으로 정렬
 {
-	int ret = -1;
-	while (s <= e) {
-		int mid = (s + e) / 2;
-		if (tar <= gun[mid]) {
-			ret = mid;
-			e = mid - 1;
-		}
-		else {
-			s = mid + 1;
-		}
-	}
-	return ret;
+	return (a1.x + a1.y) < (a2.x + a2.y);
 }
 
 
 void solve()
 {
 	sort(gun.begin(), gun.end());
+	sort(animal.begin(), animal.end(), compare);
 
-	for (auto a : animal) { //모든 동물에 대해 자신을 맞출 수 있는 사대 탐색
-		int low = a.x - (l - a.y);
-		int up = a.x + (l - a.y);
-
-		int idx = lower_bound(0, gun.size()-1, low);
-		if (idx == -1 || up < gun[idx]) continue;
-		ans++;
+	int an = 0; int g = 0;
+	for (g = 0; g < m;) {
+		while ((an < n) && (abs(gun[g] - animal[an].x) + animal[an].y <= l)) {
+			an++;
+			ans++;
+		}
+		if (an == n) break;
+		 
+		//g 사대에서 an 동물을 못잡음
+		if (gun[g] < animal[an].x) { //사대 포기
+			g++;
+		}
+		else { //동물 포기
+			an++;
+		}
 	}
 }
 
