@@ -39,28 +39,18 @@ void color(const int& x, const int& y)
 }
 
 
-//(x, y)부터 (i, j)까지 black인지 확인
-int is_black(const int& x, const int& y, const int& i, const int& j)
+int check(const int& y) //해당 y에서 그릴 수 있는 최대 넓이 리턴
 {
-	for (int p = y; p <= j; p++) {
-		for (int q = x; q <= i; q++) {
-			if (map[p][q] == 0) return 0;
+	int max = 0;
+	for (int x = 0; x < 100; x++) {
+		int h = 101;
+		for (int c = x; c < 100; c++) { //x~c까지 최소 높이 구하기
+			if (map[y][c] < h) h = map[y][c];
+			if (h == 0) break; //해당 c에서 더이상 뒤로 나아갈 수 없음 (더이상 가로가 길어질 수 없음)
+			if (max < (c - x + 1)*h) max = (c - x + 1)*h;
 		}
 	}
-	return 1;
-}
-
-
-void check(const int& x, const int& y)
-{
-	for (int i = x; i < 100; i++) {
-		if (map[y][i] == 0) return;
-		for (int j = y; j < 100; j++) {
-			if (map[j][i] == 0) break;
-			if (ans >= (i - x + 1)*(j - y + 1)) continue;
-			if (is_black(x, y, i, j)) ans = max({ ans, (i - x + 1)*(j - y + 1) });
-		}
-	}
+	return max;
 }
 
 
@@ -71,10 +61,17 @@ void solve()
 		color(paper[i].x, paper[i].y);
 	}
 
-	for (int y = 0; y < 100; y++) {
-		for (int x = 0; x < 100; x++) {
-			if (map[y][x] == 1) check(x, y);
+	//각 x에 대해 y의 높이 구하기
+	for (int x = 0; x < 100; x++) { 
+		for (int y = 1; y < 100; y++) {
+			if (map[y][x] == 1) map[y][x] += map[y - 1][x];
 		}
+	}
+
+	//높이(y)를 지정해서 x~어느 지점까지 최소 높이를 구하기
+	for (int y = 0; y < 100; y++) {
+		int area = check(y);
+		if (ans < area) ans = area;
 	}
 }
 
