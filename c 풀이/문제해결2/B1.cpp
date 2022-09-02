@@ -1,28 +1,27 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
+#include <vector>
 using namespace std;
 
 int n;
-struct DAY {
-	int m; int d;
-};
 struct FLOWER {
-	DAY start; DAY end;
+	int start; int end;
 };
 vector<FLOWER> flo;
 int ans;
 int flag = 0;
 
+
 void input()
 {
 	cin >> n;
 	for (int i = 0; i < n; i++) {
-		FLOWER f;
-		cin >> f.start.m >> f.start.d >> f.end.m >> f.end.d;
-		flo.push_back(f);
+		int a, b, c, d;
+		cin >> a >> b >> c >> d;
+		flo.push_back({ a * 100 + b, c * 100 + d });
 	}
 }
+
 
 void output()
 {
@@ -30,68 +29,36 @@ void output()
 	else cout << ans;
 }
 
+
 bool compare(const FLOWER& f1, const FLOWER& f2)
 {
-	if (f1.start.m == f2.start.m) {
-		return f1.start.d < f2.start.d;
-	}
-	else {
-		return f1.start.m < f2.start.m;
-	}
+	return f1.start < f2.start;
 }
 
-int day_compare(const DAY& d1, const DAY& d2) //d1이 크면 1, d2가 크면 2
-{
-	if (d1.m < d2.m) return -1;
-	if (d1.m > d2.m) return 1;
-	if (d1.m == d2.m) {
-		if (d1.d < d2.d) return -1;
-		else if (d1.d > d2.d) return 1;
-		else return 0;
-	}
-}
 
 void solve()
 {
 	sort(flo.begin(), flo.end(), compare);
-
-	DAY day;
-	day.m = 3; day.d = 2;
-	DAY end;
-	end.m = 11; end.d = 30;
-
+	
+	int start = 3 * 100 + 1;
 	int i = 0;
-	if (day_compare(flo[i].start, day) != -1) {
-		flag = 1;
-		return;
-	}
-	while (true) {
 
-		DAY tmp = day;
-		while (true) {
-			//종료조건
-			if (day_compare(tmp, end) != -1) {
-				ans++;
-				return;
-			}
-			if (i >= n) {
-				flag = 1;
-				return;
-			}
-			
-			if (day_compare(flo[i].start, day) == -1) { //start 날짜가 day 앞쪽에 있으면 tmp 갱신
-				if (day_compare(flo[i].end, tmp) == 1) {
-					tmp = flo[i].end;
-				}
-			}
-			else { //start 날짜가 day 뒤쪽에 있으면
-				//tmp를 day로 갱신 후 탈출
-				day = tmp;
-				ans++;
-				break;
-			}
+	while (true) {
+		int maxend = 0;
+		//day날까지 피는 날 중에 가장 늦게 지는 꽃 선택
+		while (i < n && flo[i].start <= start) {
+			if (flo[i].end > maxend) maxend = flo[i].end;
 			i++;
 		}
+
+		//실패 체크*** => 고른 maxend가 시작 날짜보다 작으면 이어지지 않음 + 굳이 i==n 체크 안해도됨
+		if (maxend < start) { flag = 1; return; }
+		//실패가 아니라면 꽃 개수 증가
+		ans++;
+		//성공 체크
+		if (maxend > 1130) return;
+		//start 갱신
+		start = maxend;
 	}
 }
 
