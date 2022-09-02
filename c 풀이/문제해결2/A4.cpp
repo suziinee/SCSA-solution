@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 int n;
@@ -9,6 +10,7 @@ struct AXIS {
 };
 vector<AXIS> paper;
 int ans = 100;
+
 
 void input()
 {
@@ -20,10 +22,12 @@ void input()
 	}
 }
 
+
 void output()
 {
 	cout << ans;
 }
+
 
 void color(const int& x, const int& y)
 {
@@ -34,57 +38,31 @@ void color(const int& x, const int& y)
 	}
 }
 
-void height(const AXIS& a)
-{
-	int now = -1; int sum = 0;
 
-	for (int x = a.x; x < a.x + 10; x++) {
-		int tmp = 0; //매 x마다 y의 누적을 구함
-		for (int y = a.y + 10 - 1;; y--) {
-			if (map[y][x] == 1) tmp++;
-			else break;
-		}
-		if (now == -1) { //초기 tmp 설정
-			now = tmp;
-			sum += tmp;
-		}
-		else {
-			if (now == tmp) sum += tmp;
-			else {
-				if (sum > ans) ans = sum;
-				sum = 0;
-				now = tmp; sum += tmp;
-			}
+//(x, y)부터 (i, j)까지 black인지 확인
+int is_black(const int& x, const int& y, const int& i, const int& j)
+{
+	for (int p = y; p <= j; p++) {
+		for (int q = x; q <= i; q++) {
+			if (map[p][q] == 0) return 0;
 		}
 	}
-	if (sum > ans) ans = sum;
+	return 1;
 }
 
-void width(const AXIS& a)
-{
-	int now = -1; int sum = 0;
 
-	for (int y = a.y; y < a.y + 10; y++) {
-		int tmp = 0; //매 y마다 x의 누적을 구함
-		for (int x = a.x; ; x++) {
-			if (map[y][x] == 1) tmp++;
-			else break;
-		}
-		if (now == -1) { //초기 tmp 설정
-			now = tmp;
-			sum += tmp;
-		}
-		else {
-			if (now == tmp) sum += tmp;
-			else {
-				if (sum > ans) ans = sum;
-				sum = 0;
-				now = tmp; sum += tmp;
-			}
+void check(const int& x, const int& y)
+{
+	for (int i = x; i < 100; i++) {
+		if (map[y][i] == 0) return;
+		for (int j = y; j < 100; j++) {
+			if (map[j][i] == 0) break;
+			if (ans >= (i - x + 1)*(j - y + 1)) continue;
+			if (is_black(x, y, i, j)) ans = max({ ans, (i - x + 1)*(j - y + 1) });
 		}
 	}
-	if (sum > ans) ans = sum;
 }
+
 
 void solve()
 {
@@ -93,9 +71,10 @@ void solve()
 		color(paper[i].x, paper[i].y);
 	}
 
-	for (int i = 0; i < n; i++) {
-		height(paper[i]);
-		width(paper[i]);
+	for (int y = 0; y < 100; y++) {
+		for (int x = 0; x < 100; x++) {
+			if (map[y][x] == 1) check(x, y);
+		}
 	}
 }
 
