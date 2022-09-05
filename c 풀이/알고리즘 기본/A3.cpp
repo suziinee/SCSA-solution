@@ -41,47 +41,30 @@ int bfs()
 
 	while (!q.empty()) {
 		NUM tmp = q.front(); q.pop();
-		NUM next;
-		next.ans = tmp.ans + 1;
 
-		//1의 자리
 		for (int i = 0; i < 10; i++) {
-			if (i == 1 || i == 3 || i == 7 || i == 9) {
-				next.n = (tmp.n / 10) * 10 + i;
-				if (next.n == en) return next.ans; //종료조건
-				if (prime[next.n] != 0 && chk[next.n] == 0) {
-					q.push(next);
-					chk[next.n] = 1;
-				}
+			int n1 = (tmp.n / 10) * 10 + i;
+			int n2 = (tmp.n / 100) * 100 + d[i] * 10 + (tmp.n % 10);
+			int n3 = (tmp.n / 1000) * 1000 + d[i] * 100 + (tmp.n % 100);
+			int n4 = (i == 0) ? tmp.n : (d[i] * 1000 + (tmp.n % 1000));
+
+			if (n1 == en || n2 == en || n3 == en || n4 == en) return tmp.ans + 1; //종료조건
+			
+			if (prime[n1] != 0 && chk[n1] == 0) {
+				q.push({ n1, tmp.ans + 1 });
+				chk[n1] = 1;
 			}
-		}
-		//10의 자리
-		for (int i = 0; i < 10; i++) {
-			next.n = (tmp.n / 100) * 100 + d[i] * 10 + (tmp.n % 10);
-			if (next.n == en) return next.ans; //종료조건
-			if (prime[next.n] != 0 && chk[next.n] == 0) {
-				q.push(next);
-				chk[next.n] = 1;
+			if (prime[n2] != 0 && chk[n2] == 0) {
+				q.push({ n2, tmp.ans + 1 });
+				chk[n2] = 1;
 			}
-		}
-		//100의 자리
-		for (int i = 0; i < 10; i++) {
-			next.n = (tmp.n / 1000) * 1000 + d[i] * 100 + (tmp.n % 100);
-			if (next.n == en) return next.ans; //종료조건
-			if (prime[next.n] != 0 && chk[next.n] == 0) {
-				q.push(next);
-				chk[next.n] = 1;
+			if (prime[n3] != 0 && chk[n3] == 0) {
+				q.push({ n3, tmp.ans + 1 });
+				chk[n3] = 1;
 			}
-		}
-		//1000의 자리
-		for (int i = 0; i < 10; i++) {
-			if (i != 0) {
-				next.n = d[i] * 1000 + (tmp.n % 1000);
-				if (next.n == en) return next.ans; //종료조건
-				if (prime[next.n] != 0 && chk[next.n] == 0) {
-					q.push(next);
-					chk[next.n] = 1;
-				}
+			if (prime[n4] != 0 && chk[n4] == 0) {
+				q.push({ n4, tmp.ans + 1 });
+				chk[n4] = 1;
 			}
 		}
 	}
