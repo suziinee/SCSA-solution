@@ -1,8 +1,36 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 using namespace std;
 
 int n;
-int year[1250];
+class DAY {
+	public :
+		int m; int d;
+
+		bool operator>(const DAY& d1) {
+			if (m == d1.m) return d > d1.d;
+			return m > d1.m;
+		}
+		bool operator<(const DAY& d1) {
+			if (m == d1.m) return d < d1.d;
+			return m < d1.m;
+		}
+		bool operator<=(const DAY& d1) {
+			if (m == d1.m) return d <= d1.d;
+			return m <= d1.m;
+		}
+		bool operator>=(const DAY& d1) {
+			if (m == d1.m) return d >= d1.d;
+			return m >= d1.m;
+		}
+		bool operator==(const DAY& d1) {
+			if (m == d1.m) return d == d1.d;
+			return m == d1.m;
+		}
+};
+struct FLO { DAY st; DAY en; };
+vector<FLO> flo;
 
 
 void input()
@@ -11,30 +39,37 @@ void input()
 	for (int i = 0; i < n; i++) {
 		int sm, sd, em, ed;
 		cin >> sm >> sd >> em >> ed;
-		if (year[sm * 100 + sd] < (em * 100 + ed)) year[sm * 100 + sd] = em * 100 + ed;
+		flo.push_back({ {sm, sd}, {em, ed} });
 	}
+}
+
+bool compare(const FLO& f1, const FLO& f2)
+{
+	if (f1.st.m == f2.st.m) {
+		return f1.st.d < f2.st.d;
+	}
+	return f1.st.m < f2.st.m;
 }
 
 int solve()
 {
 	int ans = 0;
-	
-	int s = 1 * 100 + 1;
-	int e = 3 * 100 + 1; 
-	
+	sort(flo.begin(), flo.end(), compare);
+
+	DAY e = { 3, 1 }; int i = 0;
+	DAY last_day = { 11,30 };
+
 	while (true) {
-		int tmp = 0;
-		for (int i = s; i <= e; i++) {
-			if (year[i] > tmp) tmp = year[i];
+		DAY max = { 0,0 };
+		while (i < n && flo[i].st <= e) {
+			if (max < flo[i].en) max = flo[i].en;
+			i++;
 		}
 
-		//실패 체크
-		if (e >= tmp) return 0; //tmp는 지는 날 하루 이후이므로 e==tmp여도 이어지지 않음
-		
+		if (max <= e) return 0;
 		ans++;
-		if (tmp > 1130) return ans; //11/30까지 꽃이 피어있어야함
-		s = e + 1;
-		e = tmp;
+		if (max > last_day) return ans;
+		e = max;
 	}
 }
 
