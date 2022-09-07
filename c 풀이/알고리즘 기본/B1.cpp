@@ -3,37 +3,36 @@
 #include <vector>
 using namespace std;
 
-int T, n, k;
+int T, N, K;
 vector<int> nums;
-int pick[20];
+int pick[20]; //nums의 i번째 인덱스가 뽑혔으면 1, 안뽑혔으면 0
 int flag;
+int chk[2] = { 0, 1 };
 
 
-void dfs(int depth, int s)
+void dfs(int n)
 {
-	if (depth == n) return;
-
-	if (1 <= depth && depth < n) { //1개부터 n개까지
+	if (n == N) {
 		int sum = 0;
-		for (int i = 0; i < depth; i++) {
-			sum += pick[i];
+		for (int i = 0; i < N; i++) {
+			if (pick[i] == 1) sum += nums[i];
 		}
-		if (sum == k && flag == 0) {
+		if (sum == K && flag == 0) {
 			cout << "YES" << "\n";
 			flag = 1;
-			return;
 		}
+		return;
 	}
 
-	for (int i = s; i < n; i++) {
-		pick[depth] = nums[i];
-		dfs(depth + 1, i + 1);
+	for (int i = 0; i < 2; i++) {
+		pick[n] = chk[i];
+		dfs(n + 1);
 	}
 }
 
 void solve()
 {
-	dfs(0, 0);
+	dfs(0);
 	if (flag == 0) cout << "NO" << "\n";
 }
 
@@ -46,8 +45,8 @@ void input()
 		fill(pick, pick + 20, 0);
 		flag = 0;
 
-		cin >> n >> k;
-		for (int i = 0; i < n; i++) {
+		cin >> N >> K;
+		for (int i = 0; i < N; i++) {
 			int a;
 			cin >> a;
 			nums.push_back(a);
