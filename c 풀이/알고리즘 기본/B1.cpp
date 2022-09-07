@@ -7,18 +7,16 @@ int T, N, K;
 vector<int> nums;
 
 
-bool dfs(int n, int sum) //dfs를 행하던 중 만족하지 않으면 false를 리턴
+bool dfs(int s, int sum) //dfs를 행하던 중 만족하지 않으면 false를 리턴
 {
 	if (sum == K) return true;
 	if (sum > K) return false;
 	if (n == N) return false;
 
-	//n번째 포함
-	if (dfs(n + 1, sum + nums[n])) return true;
-	//n번째 미포함
-	if (dfs(n + 1, sum)) return true;
-	//둘 다 true가 아닐 경우
-	return false;
+	for (int i = s; s <= N; i++) {
+		if (dfs(i + 1, sum + nums[i])) return true;
+	}
+	return false; //다 돌아도 true가 없었다면 false 리턴
 }
 
 void solve()
