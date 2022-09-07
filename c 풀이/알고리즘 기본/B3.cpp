@@ -6,7 +6,6 @@ using namespace std;
 int N;
 int arr[MAXN + 5][MAXN + 5];
 int chk[MAXN + 5];
-int pick[MAXN + 5];
 int ans = 0x7fffffff;
 
 
@@ -20,32 +19,28 @@ void input()
 	}
 }
 
-void dfs(int n) //depth만 파라미터로 가짐
+void dfs(int n, int sum) //depth, sum
 {
 	if (n > N) {
-		int sum = 0; 
-		//chk배열에서 1인 곳의 장소인 pick 배열에서 순서대로 꺼내기
-		for (int i = 1; i <= N; i++) {
-			sum += arr[i][pick[i]];
-		}
 		if (sum < ans) ans = sum;
 		return;
 	}
 
 	for (int i = 1; i <= N; i++) { //장소
 		if (chk[i] == 0) {
-			chk[i] = 1; //chk에 체크하고
-			pick[n] = i; //pick에 넣어주기
-			dfs(n + 1);
+			chk[i] = 1; //n번째 알파벳의 i번째 장소를 선택할 것
+			sum += arr[n][i];
+			dfs(n + 1, sum);
 			chk[i] = 0;
+			sum -= arr[n][i];
 		}
 	}
 }
 
 void solve()
 {
-	dfs(1);
-	cout << ans;
+	dfs(1, 0);
+	cout << ans << "\n";
 }
 
 
