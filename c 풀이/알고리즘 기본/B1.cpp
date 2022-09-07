@@ -5,35 +5,25 @@ using namespace std;
 
 int T, N, K;
 vector<int> nums;
-int pick[20]; //nums의 i번째 인덱스가 뽑혔으면 1, 안뽑혔으면 0
-int flag;
-int chk[2] = { 0, 1 };
+bool flag;
 
 
-void dfs(int n)
+void dfs(int n, int sum)
 {
-	if (n == N) {
-		int sum = 0;
-		for (int i = 0; i < N; i++) {
-			if (pick[i] == 1) sum += nums[i];
-		}
-		if (sum == K && flag == 0) {
-			cout << "YES" << "\n";
-			flag = 1;
-		}
-		return;
-	}
+	if (sum == K) { flag = true; return; }
+	if (n == N) return;
 
-	for (int i = 0; i < 2; i++) {
-		pick[n] = chk[i];
-		dfs(n + 1);
-	}
+	//n번째 포함
+	dfs(n + 1, sum + nums[n]);
+	//n번째 미포함
+	dfs(n + 1, sum);
 }
 
 void solve()
 {
-	dfs(0);
-	if (flag == 0) cout << "NO" << "\n";
+	dfs(0, 0);
+	if (flag) cout << "YES" << "\n";
+	else cout << "NO" << "\n";
 }
 
 void input()
@@ -42,7 +32,6 @@ void input()
 	for (int t = 0; t < T; t++) {
 		//초기화
 		nums = {};
-		fill(pick, pick + 20, 0);
 		flag = 0;
 
 		cin >> N >> K;
