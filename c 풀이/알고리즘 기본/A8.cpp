@@ -3,89 +3,93 @@
 using namespace std;
 
 #define MAX 100
-int m, n; //세로, 가로
-int map[MAX + 10][MAX + 10];
-struct AXIS { int y; int x; int d; int order; };
-AXIS st; AXIS en;
+int M, N;
+int map[MAX + 5][MAX + 5];
+bool chk[4][MAX + 5][MAX + 5];
+struct AXIS { int x; int y; int dir; int order; };
+AXIS st, en;
 queue<AXIS> q;
-bool chk[MAX + 10][MAX + 10][4]; //해당 좌표 해당 방향의 방문 여부
+
+const int dx[] = { 0, 1, 0, -1 };
+const int dy[] = { -1, 0, 1, 0 };
 
 
 void input()
 {
-	cin >> m >> n;
-	for (int y = 1; y <= m; y++) {
-		for (int x = 1; x <= n; x++) {
+	cin >> M >> N;
+	for (int y = 1; y <= M; y++) {
+		for (int x = 1; x <= N; x++) {
 			cin >> map[y][x];
 		}
 	}
-	cin >> st.y >> st.x >> st.d >> en.y >> en.x >> en.d;
-	
-	switch (st.d) {
-		case 1: st.d = 3; break;
-		case 2: st.d = 1; break;
-		case 3: st.d = 2; break;
-		case 4: st.d = 0; break;
-	}
-	switch (en.d) {
-		case 1: en.d = 3; break;
-		case 2: en.d = 1; break;
-		case 3: en.d = 2; break;
-		case 4: en.d = 0; break;
-	}
+	cin >> st.y >> st.x >> st.dir >> en.y >> en.x >> en.dir;
+
+	int change_dir[5] = { 0, 3, 1, 2, 0 };
+	st.dir = change_dir[st.dir];
+	en.dir = change_dir[en.dir];
 }
 
 int bfs()
 {
+	//초기상태
 	q.push(st);
 	st.order = 0;
-	chk[st.y][st.x][st.d] = true;
-	if (st.x == en.x&&st.y == en.y&&st.d == en.d) return st.order;
+	chk[st.dir][st.y][st.x] = true;
+	//초기상태 종료조건
+	if (st.y == en.y&&st.x == en.x&&st.dir == en.dir) return st.order;
 
 	while (!q.empty()) {
-		AXIS data = q.front(); q.pop();
+		AXIS n = q.front(); q.pop();
 
-		//왼쪽 회전 : chk 배열 확인 -> 갱신 -> 종료조건 확인 -> 푸시
-		AXIS left = data; 
-		left.d = (data.d == 0) ? 3 : (data.d - 1);
-		left.order = data.order + 1;
-		if (chk[left.y][left.x][left.d] == false) {
-			chk[left.y][left.x][left.d] = true;
-			q.push(left);
-			if (left.x == en.x&&left.y == en.y&&left.d == en.d) return left.order;
+		//왼쪽 오른쪽 회전
+		for (int i = 0; i < 2; i++) {
+			AXIS nn = n;
+			nn.order = n.order + 1;
+
+			if (i == 0) nn.dir = (n.dir + 1) % 4; //오른쪽 회전
+			else nn.dir = (n.dir == 0) ? 3 : (n.dir - 1); //왼쪽 회전
+
+			//좌표유효성 (? 굳이)
+			if (nn.x<1 || nn.y<1 || nn.x>N || nn.y>M) continue;
+			if (map[nn.y][nn.x] == 1) continue;
+			
+			//방문 
+			if (chk[nn.dir][nn.y][nn.x] == true) continue;
+
+			//push
+			chk[nn.dir][nn.y][nn.x] = true;
+			q.push(nn);
+
+			// 종료조건
+			if (nn.x == en.x&& nn.y == en.y&&nn.dir == en.dir) return nn.order;
 		}
 
-		//오른쪽 회전
-		AXIS right = data; 
-		right.d = (data.d + 1) % 4;
-		right.order = data.order + 1;
-		if (chk[right.y][right.x][right.d] == false) {
-			chk[right.y][right.x][right.d] = true;
-			q.push(right);
-			if (right.x == en.x&&right.y == en.y&&right.d == en.d) return right.order;
-		}
+		//앞으로 1칸~3칸
+		AXIS nn; 
+		int tmp_dir = n.dir;
+		int tmp_order = n.order;
+		for (int i = 0; i < 3; i++) {
+			nn.x = n.x + dx[tmp_dir];
+			nn.y = n.y + dy[tmp_dir];
+			nn.order = tmp_order + 1;
+			nn.dir = tmp_dir;
 
-		//앞으로 가기 : 한 칸 전진 -> 좌표 유효성 검증 -> chk 확인 -> 갱신 -> 종료조건 확인 -> 푸시
-		const int dx[] = { 0, 1, 0, -1 };
-		const int dy[] = { -1, 0, 1, 0 };
-		AXIS ndata; 
-		ndata.d = data.d;
-		int tmp = data.order + 1;
+			//좌표유효셩 -> break
+			if (nn.x<1 || nn.y<1 || nn.x>N || nn.y>M) break;
+			if (map[nn.y][nn.x] == 1) break;
 
-		for (int i = 0; i < 100; i++) { //최대 100칸 앞으로 갈 수 있음
-			ndata.x = data.x + dx[ndata.d];
-			ndata.y = data.y + dy[ndata.d];
+			//방문
+			if (chk[nn.dir][nn.y][nn.x] == true) continue;
 
-			if (ndata.x<1 || ndata.y<1 || ndata.x>n || ndata.y>m) break;
-			if (map[ndata.y][ndata.x] == 1) break;
+			//push
+			chk[nn.dir][nn.y][nn.x] = true;
+			q.push(nn);
 
-			if (chk[ndata.y][ndata.x][ndata.d] == false) {
-				chk[ndata.y][ndata.x][ndata.d] = true;
-				ndata.order = tmp;
-				q.push(ndata);
-				if (ndata.x == en.x&&ndata.y == en.y&&ndata.d == en.d) return tmp;
-			}
-			data = ndata;
+			//종료조건
+			if (nn.x == en.x&& nn.y == en.y&&nn.dir == en.dir) return nn.order;
+
+			//다음 단계로 나아가기
+			n = nn;
 		}
 	}
 }
