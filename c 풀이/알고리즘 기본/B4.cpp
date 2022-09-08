@@ -23,6 +23,7 @@ void input()
 
 void dfs(int n, int sum) //depth, sum
 {
+	if (sum > ans) return;
 	if (n > N) {
 		if (sum < ans) {
 			ans = sum;
@@ -35,12 +36,10 @@ void dfs(int n, int sum) //depth, sum
 		if (chk[i] == 0) {
 			chk[i] = 1; //n번째 알파벳의 i번째 장소를 선택할 것
 			route[n] = i;
-			sum += arr[n][i];
 
-			dfs(n + 1, sum);
+			dfs(n + 1, sum + arr[n][i]);
 
 			chk[i] = 0;
-			sum -= arr[n][i];
 			route[n] = 0;
 		}
 	}
