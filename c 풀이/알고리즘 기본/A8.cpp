@@ -24,7 +24,7 @@ void input()
 	}
 	cin >> st.y >> st.x >> st.dir >> en.y >> en.x >> en.dir;
 
-	int change_dir[5] = { 0, 3, 1, 2, 0 };
+	int change_dir[5] = { 0, 1, 3, 2, 0 };
 	st.dir = change_dir[st.dir];
 	en.dir = change_dir[en.dir];
 }
@@ -41,38 +41,13 @@ int bfs()
 	while (!q.empty()) {
 		AXIS n = q.front(); q.pop();
 
-		//왼쪽 오른쪽 회전
-		for (int i = 0; i < 2; i++) {
-			AXIS nn = n;
-			nn.order = n.order + 1;
-
-			if (i == 0) nn.dir = (n.dir + 1) % 4; //오른쪽 회전
-			else nn.dir = (n.dir == 0) ? 3 : (n.dir - 1); //왼쪽 회전
-
-			//좌표유효성 (? 굳이)
-			if (nn.x<1 || nn.y<1 || nn.x>N || nn.y>M) continue;
-			if (map[nn.y][nn.x] == 1) continue;
-			
-			//방문 
-			if (chk[nn.dir][nn.y][nn.x] == true) continue;
-
-			//push
-			chk[nn.dir][nn.y][nn.x] = true;
-			q.push(nn);
-
-			// 종료조건
-			if (nn.x == en.x&& nn.y == en.y&&nn.dir == en.dir) return nn.order;
-		}
+		AXIS nn = n;
+		nn.order = n.order + 1;
 
 		//앞으로 1칸~3칸
-		AXIS nn; 
-		int tmp_dir = n.dir;
-		int tmp_order = n.order;
-		for (int i = 0; i < 3; i++) {
-			nn.x = n.x + dx[tmp_dir];
-			nn.y = n.y + dy[tmp_dir];
-			nn.order = tmp_order + 1;
-			nn.dir = tmp_dir;
+		for (int i = 1; i <= 3; i++) {
+			nn.x = n.x + i * dx[nn.dir];
+			nn.y = n.y + i * dy[nn.dir];
 
 			//좌표유효셩 -> break
 			if (nn.x<1 || nn.y<1 || nn.x>N || nn.y>M) break;
@@ -87,9 +62,25 @@ int bfs()
 
 			//종료조건
 			if (nn.x == en.x&& nn.y == en.y&&nn.dir == en.dir) return nn.order;
+		}
 
-			//다음 단계로 나아가기
-			n = nn;
+		nn = n;
+		nn.order = n.order + 1;
+
+		//왼쪽 오른쪽 회전
+		for (int i = 0; i < 2; i++) {
+			if (i == 0) nn.dir = (n.dir + 1) % 4; //오른쪽 회전
+			else nn.dir = (n.dir == 0) ? 3 : n.dir - 1; //왼쪽 회전
+
+			//방문 
+			if (chk[nn.dir][nn.y][nn.x] == true) continue;
+
+			//push
+			chk[nn.dir][nn.y][nn.x] = true;
+			q.push(nn);
+
+			// 종료조건
+			if (nn.x == en.x&& nn.y == en.y&&nn.dir == en.dir) return nn.order;
 		}
 	}
 }
