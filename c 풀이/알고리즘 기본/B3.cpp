@@ -1,5 +1,4 @@
 #include <iostream>
-#include <algorithm>
 using namespace std;
 
 #define MAXN 10
@@ -21,6 +20,7 @@ void input()
 
 void dfs(int n, int sum) //depth, sum
 {
+	if (sum > ans) return;
 	if (n > N) {
 		if (sum < ans) ans = sum;
 		return;
@@ -29,10 +29,8 @@ void dfs(int n, int sum) //depth, sum
 	for (int i = 1; i <= N; i++) { //장소
 		if (chk[i] == 0) {
 			chk[i] = 1; //n번째 알파벳의 i번째 장소를 선택할 것
-			sum += arr[n][i];
-			dfs(n + 1, sum);
+			dfs(n + 1, sum + arr[n][i]);
 			chk[i] = 0;
-			sum -= arr[n][i];
 		}
 	}
 }
