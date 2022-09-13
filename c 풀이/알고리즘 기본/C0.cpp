@@ -8,7 +8,6 @@ list<int> rel[10 + 1];
 int chk[10 + 1];
 int pick[10 + 1];
 int money[10 + 1];
-int ans[10 + 1];
 
 
 void input()
@@ -34,21 +33,25 @@ bool pick_ok() //pick[2]부터 pick[N]까지 조건을 만족하는지 판단
 	return true;
 }
 
-void dfs(int n)
+bool dfs(int n)
 {
 	if (n > N) {
-		if (pick_ok()) { copy(pick, pick + 10 + 1, ans); }
-		return;
+		if (pick_ok()) return true;
+		return false;
 	}
 
 	for (int i = 2; i <= N; i++) {
 		if (chk[i] == 0) {
 			pick[n] = money[i];
 			chk[i] = 1;
-			dfs(n + 1);
+			if (dfs(n + 1)) {
+				chk[i] = 0;
+				return true;
+			}
 			chk[i] = 0;
 		}
 	}
+	return false;
 }
 
 bool compare(const int& i1, const int& i2) { return i1 > i2; }
@@ -59,7 +62,7 @@ void solve()
 	pick[1] = money[1];
 
 	dfs(2);
-	for (int i = 1; i <= N; i++) { cout << ans[i] << " "; }
+	for (int i = 1; i <= N; i++) { cout << pick[i] << " "; }
 }
 
 
