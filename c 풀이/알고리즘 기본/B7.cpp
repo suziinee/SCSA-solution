@@ -2,44 +2,47 @@
 #include <algorithm>
 #include <queue>
 #include <list>
+#include <vector>
 using namespace std;
 
+#define MAXN 10
+struct CONN { int n; int val; };
+struct STATUS { int n; int sum; };
 int N;
-struct CITY { int n; int val; }; //도시번호, 가중치
-list<CITY> city[10 + 1];
-queue<int> q;
-int chk[10 + 1]; //1부터 해당 도시번호까지 최소 시간
+list<CONN> conn[MAXN + 1];
 
 
 void input()
 {
-	int n;
-
 	cin >> N;
-	for (int i = 1; i <= N; i++) {
-		for (int j = 1; j <= N; j++) {
-			cin >> n;
-			if (n == 0) continue;
-			city[i].push_back({ j, n });
+	for (int y = 1; y <= N; y++) {
+		for (int x = 1; x <= N; x++) {
+			int val;
+			cin >> val;
+			if (val) {
+				conn[y].push_back({ x, val });
+			}
 		}
 	}
 }
 
 int bfs()
 {
-	fill(chk, chk + 10 + 1, 0x7fffffff);
+	queue<int> q;
+	int chk[MAXN + 1]; //1에서 갈 수 있는 최단경로
+	fill(chk, chk + MAXN + 1, 0x7fffffff);
 
 	q.push(1);
 	chk[1] = 0;
-	if (N == 1) return 0;
+	if (N == 1) return chk[1];
 
 	while (!q.empty()) {
 		int data = q.front(); q.pop();
 
-		for (auto a : city[data]) { //a는 list<CITY> 
-			if (chk[a.n] > chk[data] + a.val) {
-				chk[a.n] = chk[data] + a.val;
-				q.push(a.n);
+		for (CONN c : conn[data]) {
+			if (chk[c.n] > chk[data] + c.val) {
+				q.push(c.n);
+				chk[c.n] = chk[data] + c.val;
 			}
 		}
 	}
@@ -48,17 +51,19 @@ int bfs()
 }
 
 
-void solve()
+int solve()
 {
 	int ans = bfs();
-	if (ans == 0x7fffffff) cout << 0;
-	else cout << ans;
+
+	if (ans == 0x7fffffff) return 0;
+	else return ans;
 }
 
 
 int main(void)
 {
 	input();
-	solve();
+	int ans = solve();
+	cout << ans;
 	return 0;
 }
