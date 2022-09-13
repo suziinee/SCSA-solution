@@ -1,70 +1,54 @@
 #include <iostream>
-#include <vector>
 #include <string>
-#include <list>
 #include <queue>
 using namespace std;
 
 #define MAXN 1000
 int N, K;
-vector<string> bit = { "0" };
-list<int> arr[MAXN + 10];
 int st, en;
+string code[MAXN + 1];
 
 queue<int> q;
-bool chk[MAXN + 10]; 
-int path[MAXN + 10];
+int chk[MAXN + 1];
+int path[MAXN + 1];
 
 
 void input()
 {
 	cin >> N >> K;
-
 	for (int i = 1; i <= N; i++) {
-		string s;
-		cin >> s;
-		bit.push_back(s);
+		cin >> code[i];
 	}
-
 	cin >> st >> en;
 }
 
-int bit_calcul(const string& s1, const string& s2)
+int is_haming(const string& s1, const string& s2)
 {
-	int ret = 0;
+	int cnt = 0;
 	for (int i = 0; i < K; i++) {
-		if (s1[i] != s2[i]) ret++;
+		if (s1[i] != s2[i]) cnt++;
 	}
-	return ret;
-}
-
-void make_haming()
-{
-	for (int i = 1; i <= N; i++) {
-		string me = bit[i];
-		for (int j = 1; j <= N; j++) {
-			if (i == j) continue;
-			if (bit_calcul(me, bit[j]) == 1) arr[i].push_back(j);
-		}
-	}
+	if (cnt == 1) return 1;
+	return 0;
 }
 
 int bfs()
 {
 	q.push(st);
-	chk[st] = true;
-	path[st] = -1; //시작
-
+	chk[st] = 1;
+	path[st] = -1;
+	
 	while (!q.empty()) {
 		int n = q.front(); q.pop();
 
-		for (int nn : arr[n]) {
-			if (chk[nn] == false) { //처음 방문할 경우
-				chk[nn] = true;
-				path[nn] = n;
-				q.push(nn);
-				if (nn == en) return 1;
-			}
+		for (int i = 1; i <= N; i++) {
+			if (chk[i]) continue;
+			if (!is_haming(code[n], code[i])) continue;
+
+			path[i] = n;
+			chk[i] = 1;
+			q.push(i);
+			if (i == en) return 1;
 		}
 	}
 
@@ -80,10 +64,9 @@ void print_route(int num)
 
 void solve()
 {
-	make_haming();
-	int ans = bfs();
+	int b = bfs();
 
-	if (ans == -1) cout << -1;
+	if (b == -1) cout << -1 << "\n";
 	else print_route(en);
 }
 
