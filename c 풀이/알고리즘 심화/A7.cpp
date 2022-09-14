@@ -22,32 +22,22 @@ void input()
 	}
 }
 
-void bfs(int y, int x) //공기와 닿는 부분을 2로 변경
+void dfs(int y, int x) //공기와 닿는 부분을 2로 변경
 {
 	static int dx[] = { 0, 1, 0, -1 };
 	static int dy[] = { -1, 0, 1, 0 };
 
-	q.push({ y, x });
 	chk[y][x] = true;
 
-	while (!q.empty()) {
-		AXIS data = q.front(); q.pop();
-		
-		for (int d = 0; d < 4; d++) {
-			int nx = data.x + dx[d];
-			int ny = data.y + dy[d];
+	for (int d = 0; d < 4; d++) {
+		int nx = x + dx[d];
+		int ny = y + dy[d];
 
-			if (nx < 0 || ny < 0 || nx >= C || ny >= R) continue;
-			if (chk[ny][nx]) continue;
+		if (nx < 0 || ny < 0 || nx >= C || ny >= R) continue;
+		if (chk[ny][nx]) continue;
 
-			if (map[ny][nx] == 0) {
-				chk[ny][nx] = true;
-				q.push({ ny, nx });
-			}
-			else if (map[ny][nx] == 1) {
-				map[ny][nx] = 2;
-			}
-		}
+		if (map[ny][nx] == 0) dfs(ny, nx);
+		else map[ny][nx] = 2;
 	}
 }
 
@@ -78,10 +68,10 @@ void solve()
 
 	while (true) {
 		fill(&chk[0][0], &chk[MAX - 1][MAX], 0);
-		bfs(0, 0);
-		bfs(0, C - 1);
-		bfs(R - 1, 0);
-		bfs(R - 1, C - 1);
+		dfs(0, 0);
+		dfs(0, C - 1);
+		dfs(R - 1, 0);
+		dfs(R - 1, C - 1);
 		t++;
 
 		int c = check();
