@@ -69,9 +69,6 @@ void solve()
 	while (true) {
 		fill(&chk[0][0], &chk[MAX - 1][MAX], 0);
 		dfs(0, 0);
-		dfs(0, C - 1);
-		dfs(R - 1, 0);
-		dfs(R - 1, C - 1);
 		t++;
 
 		int c = check();
