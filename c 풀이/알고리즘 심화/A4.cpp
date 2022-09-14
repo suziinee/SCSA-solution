@@ -17,6 +17,8 @@ void dfs(int y, int x)
 {
 	static int dx[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
 	static int dy[] = { -1, -1, 0, 1, 1, 1, 0, -1 };
+	
+	map[y][x] = '0';
 
 	for (int d = 0; d < 8; d++) {
 		int nx = x + dx[d];
@@ -25,7 +27,6 @@ void dfs(int y, int x)
 		if (nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
 		if (map[ny][nx] == '0') continue;
 
-		map[ny][nx] = '0';
 		dfs(ny, nx);
 	}
 }
