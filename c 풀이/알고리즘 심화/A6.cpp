@@ -6,7 +6,7 @@ using namespace std;
 int N;
 int map[MAXN][MAXN];
 int chk[MAXN][MAXN];
-int min_ = 101; int max_ = -1;
+int height[MAXN + 1];
 
 const int dx[] = { 0, 1, 0, -1 };
 const int dy[] = { -1, 0, 1, 0 };
@@ -18,8 +18,7 @@ void input()
 	for (int y = 0; y < N; y++) {
 		for (int x = 0; x < N; x++) {
 			cin >> map[y][x];
-			if (map[y][x] < min_) min_ = map[y][x];
-			if (map[y][x] > max_) max_ = map[y][x];
+			height[map[y][x]] = 1;
 		}
 	}
 }
@@ -57,9 +56,11 @@ void dfs(int y, int x) //0인 곳을 카운트
 
 void solve()
 {
-	int ans = 1; 
+	int ans = 1;
 
-	for (int h = min_; h <= max_; h++) {
+	for (int h = 1; h <= 100; h++) {
+		if (height[h] == 0) continue;
+
 		fill(&chk[0][0], &chk[MAXN - 1][MAXN], 0);
 		for (int y = 0; y < N; y++) {
 			for (int x = 0; x < N; x++) {
