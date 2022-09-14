@@ -23,19 +23,12 @@ void input()
 	}
 }
 
-void flood_fill(int y, int x, int h) //0인 곳을 1로 만들기
+void flood_fill(int y, int x, int h) 
 {
-	chk[y][x] = 1;
-
-	for (int d = 0; d < 4; d++) {
-		int nx = x + dx[d];
-		int ny = y + dy[d];
-
-		if (nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
-		if (map[ny][nx] > h) continue;
-		if (chk[ny][nx]) continue;
-
-		flood_fill(ny, nx, h);
+	for (int y = 0; y < N; y++) {
+		for (int x = 0; x < N; x++) {
+			if (map[y][x] <= h) chk[y][x] = 1;
+		}
 	}
 }
 
