@@ -29,6 +29,13 @@ void input()
 	}
 }
 
+void search_route(int n)
+{
+	if (n == -1) return;
+	search_route(path[n]);
+	route.push_back(n);
+}
+
 int bfs()
 {
 	fill(chk, chk + MAXN + 1, 0x7fffffff);
@@ -50,13 +57,6 @@ int bfs()
 			pq.push({ i, data.sum + conn[data.cur][i] });
 		}
 	}
-}
-
-void search_route(int n)
-{
-	if (n == -1) return;
-	search_route(path[n]);
-	route.push_back(n);
 }
 
 void solve()
