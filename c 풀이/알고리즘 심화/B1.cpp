@@ -70,11 +70,13 @@ void solve()
 	for (int i = 0; i < route.size() - 1; i++) {
 		tmp = conn[route[i]][route[i + 1]];
 		conn[route[i]][route[i + 1]] = 2 * tmp;
+		conn[route[i + 1]][route[i]] = 2 * tmp;
 
 		candi = bfs();
 		if (candi > max_route) max_route = candi;
 
 		conn[route[i]][route[i + 1]] = tmp;
+		conn[route[i + 1]][route[i]] = tmp;
 	}
 
 	cout << max_route - init_route;
