@@ -34,12 +34,26 @@ bool dfs(int n)
 }
 
 
-int solve(const int& total)
+int solve()
 {
-	//1. total이 30인지 확인
-	if (total != 30) return 0;
+	//1. 전체 승 = 전체 패 = (30 - 전체 무) / 2
+	int total_win = 0; int total_lose = 0; int total_tie = 0;
+	for (int y = 0; y < 6; y++) {
+		total_win += arr[y][0];
+		total_lose += arr[y][2];
+		total_tie += arr[y][1];
+	}
+	if (total_win != total_lose || total_win != (30 - total_tie) / 2 || total_lose != (30 - total_tie) / 2) return 0;
+
+	//2. 각 팀의 승 + 무 + 패 = 5
+	for (int y = 0; y < 6; y++) {
+		if (arr[y][0] + arr[y][1] + arr[y][2] != 5) return 0;
+	}
+
+	//3. 무승부는 반드시 짝을 이뤄야 함
+	if (total_tie % 2) return 0;
 	
-	//2. dfs로 나머지 확인
+	//4. dfs로 나머지 확인
 	bool ret = dfs(0);
 	return ret == true ? 1 : 0;
 }
@@ -49,15 +63,13 @@ void input()
 {
 	for (int i = 0; i < 4; i++) {
 		
-		int total = 0;
 		for (int y = 0; y < 6; y++) {
 			for (int x = 0; x < 3; x++) {
 				cin >> arr[y][x];
-				if (arr[y][x]) total += arr[y][x];
 			}
 		}
 
-		int ans = solve(total);
+		int ans = solve();
 		cout << ans << " ";
 	}
 }
