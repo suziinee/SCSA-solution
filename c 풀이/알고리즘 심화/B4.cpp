@@ -1,53 +1,45 @@
 #include <iostream>
-#include <algorithm>
 #include <vector>
 #include <queue>
-#include <list>
 using namespace std;
 
 struct COMP_SMALLER {
 	bool operator()(long long int& i1, long long int& i2) { return i1 > i2; }
 };
-struct COMP_BIGGER {
-	bool operator()(long long int& i1, long long int& i2) { return i1 < i2; }
-};
-
 priority_queue<long long int, vector<long long int>, COMP_SMALLER> big_pq;
-priority_queue<long long int, vector<long long int>, COMP_BIGGER> small_pq;
+vector<long long int> nums;
 
 
-void solve(int n)
+void solve()
 {
-	//초기화
-	small_pq = {};
-	big_pq = {};
-
-	small_pq.push(1);
+	nums.push_back(1);
 	int ugly[3] = { 2, 3, 5 };
+	int nums_index = 0;
 
-	while (true) {
-		if (small_pq.size() >= n) break;
+	while (nums.size() < 1500) {
+		long long int n = nums[nums_index];
 
 		for (int i = 0; i < 3; i++) {
-			big_pq.push(small_pq.top() * ugly[i]);
+			big_pq.push(n * ugly[i]);
 		}
 
-		while (big_pq.top() == small_pq.top()) {
+		while (big_pq.top() == n) {
 			big_pq.pop();
 		}
 
-		small_pq.push(big_pq.top()); big_pq.pop();
+		nums.push_back(big_pq.top()); big_pq.pop();
+		nums_index++;
 	}
 }
 
 void input()
 {
+	solve();
 	int n;
 	while (true) {
 		cin >> n;
 		if (n == 0) return;
-		solve(n);
-		cout << small_pq.top() << "\n";
+		cout << nums[n - 1] << "\n";
 	}
 }
 
