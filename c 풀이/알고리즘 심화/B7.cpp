@@ -4,10 +4,11 @@
 #include <algorithm>
 using namespace std;
 
+#define MAXN 10000
 int N, M;
 
 struct CAND {
-	string name;
+	string name; 
 	int idx;
 	int score;
 	bool operator<(CAND& c) {
@@ -15,7 +16,7 @@ struct CAND {
 		return score > c.score;
 	}
 };
-vector<CAND> cand;
+CAND cand[MAXN];
 unordered_map<string, CAND*> ht;
 
 
@@ -25,10 +26,8 @@ void input()
 	string s;
 	for (int i = 0; i < N; i++) {
 		cin >> s;
-		cand.push_back({ s, i, 0 });
-	}
-	for (int i = 0; i < N; i++) {
-		ht.insert({ cand[i].name, &cand[i] });
+		cand[i] = { s, i, 0 };
+		ht.insert({ s, &cand[i]});
 	}
 }
 
@@ -47,7 +46,7 @@ void vote()
 
 void solve()
 {
-	sort(cand.begin(), cand.end());
+	sort(cand, cand + N);
 	for (int i = 0; i < 3; i++) {
 		cout << cand[i].name << " " << cand[i].score << "\n";
 	}
