@@ -7,8 +7,8 @@ int B, N;
 int prefix[MAXN + 1];
 
 int boat[MAXB];
-int pick[MAXB];
 int chk[MAXB];
+int b_sum;
 int ans = -1;
 
 
@@ -18,6 +18,7 @@ void input()
 
 	for (int i = 0; i < B; i++) {
 		cin >> boat[i];
+		b_sum += boat[i];
 	}
 	int p;
 	for (int i = 1; i <= N; i++) {
@@ -28,7 +29,7 @@ void input()
 
 int binary_search(int st, int en, int tar) //tar보다 작거나 같은 숫자의 가장 큰 인덱스
 {
-	int ret = 0; int mid;
+	int ret = -1; int mid;
 	while (st <= en) {
 		mid = (st + en) / 2;
 		if (tar >= prefix[mid]) {
@@ -42,39 +43,19 @@ int binary_search(int st, int en, int tar) //tar보다 작거나 같은 숫자�
 	return ret;
 }
 
-int check()
+void dfs(int n, int remain)
 {
-	int idx = 1; int i;
-	for (i = 0; i < B; i++) {
-		idx = binary_search(idx - 1, N, prefix[idx - 1] + pick[i]); //idx 번째까지 승객 태움
-		if (idx == N) { //i번째 배까지 승객을 다 태움
-			break;
-		}
-		idx++;
-	}
-
-	if (idx == N) {
-		int sum = 0;
-		for (int j = i + 1; j < B; j++) sum += pick[j];
-		return sum;
-	}
-	else return -1;
-}
-
-void dfs(int n)
-{
-	if (n == B) {
-		int ret = check();
-		if (ret != -1 && ret > ans) ans = ret;
+	if (n == N + 1) { //승객을 다 태움
+		if (ans < remain) ans = remain;
 		return;
 	}
+	if (remain == 0) return; //배가 부족함
 
 	for (int i = 0; i < B; i++) {
 		if (chk[i] == 0) {
-			pick[n] = boat[i];
+			int last_pass = binary_search(n - 1, N, prefix[n - 1] + boat[i]);
 			chk[i] = 1;
-			dfs(n + 1);
-			pick[n] = 0;
+			dfs(last_pass + 1, remain - boat[i]);
 			chk[i] = 0;
 		}
 	}
@@ -82,7 +63,7 @@ void dfs(int n)
 
 void solve()
 {
-	dfs(0);
+	dfs(1, b_sum);
 	cout << ans;
 }
 
