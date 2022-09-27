@@ -25,18 +25,15 @@ void input()
 
 bool check(const long long int& d)
 {
-	int cow = 0; 
-	long long int cur = -1;
-
-	for (int i = 0; i < M; i++) {
-		if (cur < grass[i].s) cur = grass[i].s;
-		while (cur <= grass[i].e) {
-			cow++;
-			if (cow >= N) return true;
-			cur += d;
-		}
+	long long int cow_pos = grass[0].s;
+	int g_idx = 0;
+	for (int i = 0; i < N - 1; i++) {
+		cow_pos += d;
+		while (g_idx < M && grass[g_idx].e < cow_pos) g_idx++;
+		if (g_idx == M) return false;
+		if (cow_pos < grass[g_idx].s) cow_pos = grass[g_idx].s;
 	}
-	return false;
+	return true;
 }
 
 int bst(long long int st, long long int en)
