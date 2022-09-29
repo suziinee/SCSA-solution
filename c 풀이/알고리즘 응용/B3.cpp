@@ -55,8 +55,8 @@ bool check(int& idx, string& s) //idx까지 완성이 된 상태
 		return true;
 	}
 	case 4: {
-		if (key(s[1]) + key(s[2]) + key(s[3]) + key(s[4]) != 26) return false;
-		return true;
+		if (key(s[1]) + key(s[2]) + key(s[3]) + key(s[4]) == 26) return true;
+		return false;
 	}
 	case 5: {
 		if (key(s[0]) + key(s[2]) + key(s[5]) >= 26) return false;
@@ -69,8 +69,8 @@ bool check(int& idx, string& s) //idx까지 완성이 된 상태
 		return true;
 	}
 	case 7: {
-		if (key(s[0]) + key(s[2]) + key(s[5]) + key(s[7]) != 26) return false;
-		return true;
+		if (key(s[0]) + key(s[2]) + key(s[5]) + key(s[7]) == 26) return true;
+		return false;
 	}
 	case 8: {
 		if (key(s[1]) + key(s[5]) + key(s[8]) >= 26) return false;
@@ -83,21 +83,19 @@ bool check(int& idx, string& s) //idx까지 완성이 된 상태
 		return true;
 	}
 	case 10: {
-		if (key(s[0]) + key(s[3]) + key(s[6]) + key(s[10]) != 26) return false;
-		if (key(s[7]) + key(s[8]) + key(s[9]) + key(s[10]) != 26) return false;
-		return true;
+		if ((key(s[0]) + key(s[3]) + key(s[6]) + key(s[10]) == 26) && (key(s[7]) + key(s[8]) + key(s[9]) + key(s[10]) == 26)) return true;
+		return false;
 	}
 	case 11: {
-		if (key(s[1]) + key(s[5]) + key(s[8]) + key(s[11]) != 26) return false;
-		if (key(s[4]) + key(s[6]) + key(s[9]) + key(s[11]) != 26) return false;
-		return true;
+		if ((key(s[1]) + key(s[5]) + key(s[8]) + key(s[11]) == 26) && (key(s[4]) + key(s[6]) + key(s[9]) + key(s[11]) == 26)) return true;
+		return false;
 	}
 	}
 }
 
 bool dfs(string str, int s)
 {
-	if (s == (int)xloc.size()) { //도달하면 완성된 것?..
+	if (s == (int)xloc.size()) { //도달하면 완성된 것
 		if (complete(str)) {
 			ans = str;
 			return true;
@@ -128,10 +126,10 @@ void solve()
 		for (int y = 0; y < 5; y++) {
 			for (int x = 0; x < 9; x++) {
 				switch (y * 9 + x) {
-				case 4: 
-				case 10: case 12: case 14: case 16: 
-				case 20: case 24: 
-				case 28: case 30: case 32: case 34: 
+				case 4:
+				case 10: case 12: case 14: case 16:
+				case 20: case 24:
+				case 28: case 30: case 32: case 34:
 				case 40: {cout << ans[idx++]; break; }
 				default: cout << '.';
 				}
@@ -139,7 +137,7 @@ void solve()
 			cout << "\n";
 		}
 	}
-	
+
 }
 
 
