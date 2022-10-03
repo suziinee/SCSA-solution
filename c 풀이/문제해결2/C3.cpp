@@ -25,16 +25,13 @@ void input()
 
 bool check(int S) //연속해서 먹은 음식 중 매운 음식 단계의 최대가 S가 될 수 있는가?
 {
+	long long int sum_M = 0;
 	for (int i = 0; i < N; i++) {
-		int sum_M = food[i].f;
-		int max_S = food[i].s;
-		int j = i + 1;
-		while (sum_M < M && j < N) {
-			sum_M += food[j].f;
-			max_S = max(max_S, food[j].s);
-			j++;
+		if (food[i].s > S) sum_M = 0; //S를 넘어가면 sum_M 초기화하고 다시 더하기
+		else {
+			sum_M += food[i].f;
+			if (sum_M >= M) return true;
 		}
-		if (sum_M >= M && max_S <= S) return true;
 	}
 	return false;
 }
