@@ -13,13 +13,10 @@ unordered_set<long long int> chk;
 void dfs(int s, int n)
 {
 	if (n == M) {
-		int new_pick[12];
-		copy(pick, pick + 12, new_pick); //원래 pick이 훼손되면 안됨
-		sort(new_pick, new_pick + M); //오름차순 정렬
 		long long int tmp = 0;
 		long long int mul = 100;
 		for (int i = 0; i < M; i++) {
-			tmp += ((long long int)new_pick[i] * mul);
+			tmp += ((long long int)pick[i] * mul);
 			mul *= 100;
 		}
 		if (chk.find(tmp) == chk.end()) chk.insert(tmp);
@@ -49,6 +46,7 @@ void input()
 			mat.push_back(n);
 		}
 		
+		sort(mat.begin(), mat.end());
 		dfs(0, 0);
 		cout << chk.size() << "\n";
 	}
