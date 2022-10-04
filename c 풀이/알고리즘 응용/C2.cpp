@@ -5,6 +5,7 @@ using namespace std;
 #define MAXN 10
 int N;
 int ans;
+int total_tree;
 int map[MAXN][MAXN];
 
 struct AXIS { int y; int x; };
@@ -20,8 +21,13 @@ void input()
 	for (int y = 0; y < N; y++) {
 		for (int x = 0; x < N; x++) {
 			cin >> map[y][x];
-			if (map[y][x] == 1) tree.push_back({ y, x });
-			else if (map[y][x] == 2) fire.push_back({ y, x });
+			if (map[y][x] == 1) {
+				tree.push_back({ y, x });
+				total_tree++;
+			}
+			else if (map[y][x] == 2) {
+				fire.push_back({ y, x });
+			}
 		}
 	}
 }
@@ -30,6 +36,7 @@ int flood_fill()
 {
 	static int dx[] = { 0, 1, 0, -1 };
 	static int dy[] = { -1, 0, 1, 0 };
+
 	q = {};
 	fill(&chk[0][0], &chk[MAXN - 1][MAXN], false);
 
@@ -38,6 +45,7 @@ int flood_fill()
 		chk[f.y][f.x] = true;
 	}
 	
+	int cnt = 0;
 	while (!q.empty()) {
 		AXIS cur = q.front(); q.pop();
 		for (int d = 0; d < 4; d++) {
@@ -47,33 +55,28 @@ int flood_fill()
 			if (map[ny][nx] != 1 || chk[ny][nx]) continue;
 			chk[ny][nx] = true;
 			q.push({ ny, nx });
+			cnt++;
 		}
 	}
 
-	int ret = 0;
-	for (int y = 0; y < N; y++) {
-		for (int x = 0; x < N; x++) {
-			if (chk[y][x] == false && map[y][x] == 1) ret++;
-		}
-	}
-	return ret;
+	return total_tree - cnt;
 }
 
-void dfs(int n, int cut)
+void dfs(int s, int cut)
 {
+	if (cut > 2) return;
 	if (cut >= 0 && cut <= 2) {
 		int ret = flood_fill();
+		ret -= cut;
 		if (ans < ret) ans = ret;
 	}
-	if (cut > 2) return;
-	if (n == tree.size()) return;
+	if (s == tree.size()) return;
 
-	//n번 나무 자르기
-	map[tree[n].y][tree[n].x] = 0;
-	dfs(n + 1, cut + 1);
-	map[tree[n].y][tree[n].x] = 1;
-	//n번 나무 자르지 않기
-	dfs(n + 1, cut);
+	for (int i = s; i < tree.size(); i++) {
+		map[tree[i].y][tree[i].x] = 0;
+		dfs(i + 1, cut + 1);
+		map[tree[i].y][tree[i].x] = 1;
+	}
 }
 
 void solve()
